@@ -1,103 +1,146 @@
-import Image from "next/image";
+'use client';
+
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Projects } from "./components/Projects";
+import { ExperienceTimeline } from "./components/ExperienceTimeline";
+import { Nav } from "./components/Nav";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const headingRef = useRef(null);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  useEffect(() => {
+    if (!headingRef.current) return;
+
+    // Get the original text
+    const element = headingRef.current;
+    const originalText = element.textContent;
+
+    // Create a wrapper div to hold the split text
+    const wrapper = document.createElement("div");
+    wrapper.style.display = "inline";
+    wrapper.className = "split-text-wrapper";
+
+    // Split text by words and add to wrapper with proper spacing
+    const words = originalText.trim().split(/\s+/);
+
+    words.forEach((word, index) => {
+      // Create word span
+      const wordSpan = document.createElement("span");
+      wordSpan.textContent = word;
+      wordSpan.style.display = "inline-block";
+      wordSpan.style.opacity = "0";
+      wordSpan.style.transform = "translateY(20px)";
+      wordSpan.className = "word-span";
+
+      // Add to wrapper
+      wrapper.appendChild(wordSpan);
+
+      // Add non-breaking space after each word except the last
+      if (index < words.length - 1) {
+        wrapper.appendChild(document.createTextNode(" "));
+      }
+    });
+
+    // Replace content with our wrapper
+    element.textContent = "";
+    element.appendChild(wrapper);
+
+    // Animate the word spans
+    gsap.to(".word-span", {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      stagger: 0.1,
+      ease: "power3.out",
+    });
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-background text-foreground font-sans">
+      {/* Navigation */}
+      <Nav />
+      <div className="xl:mr-32">
+
+
+      {/* Hero Section - First section */}
+      <div id="hero" className="bg-background flex flex-col justify-end h-screen">
+        <div className="px-8 pb-16 md:pb-24">
+          <div className="mb-4">
+            <Badge variant="subtle" className="px-3 py-1 text-sm">
+              Hi, I&apos;m Agustin
+            </Badge>
+          </div>
+          <h1
+            ref={headingRef}
+            className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-none text-left max-w-4xl"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            I craft elegant and scalable production software.
+          </h1>
+          <div className="mt-8">
+            <Button>View Projects</Button>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
+
+      {/* About Section - Second section */}
+      <div id="about" className="overflow-auto">
+        <div className="mx-auto px-8 py-24">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
+            <div>
+              <h2 className="text-4xl font-bold mb-8">About Me</h2>
+              <p className="text-xl leading-relaxed mb-6">
+                I&apos;m Full Stack Developer with 5+ years of experience specializing in building exceptional digital
+                experiences. With a focus on performance and design, I create
+                solutions that balance form and function.
+              </p>
+              <p className="text-xl leading-relaxed">
+                My expertise spans frontend and backend development, with a passion for delivering features that truly matter. I thrive in collaborative environments, working closely with designers and stakeholders to
+                bring ideas to life.
+              </p>
+            </div>
+            <div className="flex items-center justify-center">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-primary/10  rounded-xl p-6">
+                  <h3 className="text-2xl font-bold mb-2">Frontend</h3>
+                  <p>React, Next.js, TypeScript, Tailwind CSS</p>
+                </div>
+                <div className="bg-primary/10 rounded-xl p-6">
+                  <h3 className="text-2xl font-bold mb-2">Backend</h3>
+                  <p>Node.js, Express, PostgreSQL, MongoDB</p>
+                </div>
+                <div className="bg-primary/10 rounded-xl p-6">
+                  <h3 className="text-2xl font-bold mb-2">Design</h3>
+                  <p>Figma, Design Systems, UI/UX</p>
+                </div>
+                <div className="bg-primary/10 rounded-xl p-6">
+                  <h3 className="text-2xl font-bold mb-2">DevOps</h3>
+                  <p>Docker, CI/CD, AWS, Vercel</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Projects Section - Third section */}
+      <div id="projects" className="bg-background text-foreground overflow-auto">
+        <div className="mx-auto px-8 py-24">
+          <h2 className="text-4xl font-bold mb-12 text-center">My Work</h2>
+          <Projects />
+        </div>
+      </div>
+
+      {/* Experience Section - Fourth section */}
+      <div id="experience" className="bg-background text-foreground overflow-auto">
+        <div className="py-24">
+          <h2 className="text-4xl font-bold mb-12 text-center">Experience</h2>
+          <ExperienceTimeline />
+        </div>
+      </div>
+    </div>
     </div>
   );
 }

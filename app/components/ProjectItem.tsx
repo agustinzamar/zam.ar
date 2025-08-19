@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
+import { ProjectImage } from './ProjectImage';
 
 interface ProjectItemProps {
   id: string;
@@ -39,12 +39,10 @@ export const ProjectItem: React.FC<ProjectItemProps> = ({
 
       {isActive && (
         <div className="md:hidden mt-4 mb-8 px-2">
-          <div className="relative w-full aspect-video bg-muted mb-4">
-            <Image
+          <div className="w-full aspect-video bg-background mb-4 overflow-hidden">
+            <ProjectImage
               src={imageUrl}
               alt={title}
-              fill
-              className="object-cover"
             />
           </div>
           <p className="text-lg mb-3">{description}</p>

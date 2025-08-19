@@ -62,7 +62,7 @@ export default function Home() {
     <div className="min-h-screen bg-background text-foreground font-sans">
       {/* Navigation */}
       <Nav />
-      <div className="xl:mr-32">
+      <div className="lg:mr-32">
 
 
       {/* Hero Section - First section */}

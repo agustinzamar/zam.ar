@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
 import { ProjectItem } from './ProjectItem';
+import { ProjectImage } from './ProjectImage';
 
 // Sample project data - you can replace with real data later
 const projects = [
@@ -11,7 +11,7 @@ const projects = [
 		title: 'E-Commerce Platform',
 		description:
 			'A modern e-commerce platform with responsive design and seamless checkout experience for a fashion retailer.',
-		imageUrl: '/project1.jpg', // You'll need to add these images to your public folder
+		imageUrl: '/projects/project1.png',
 		tags: ['React', 'Next.js', 'Tailwind CSS', 'Stripe', 'MongoDB'],
 	},
 	{
@@ -19,7 +19,7 @@ const projects = [
 		title: 'Finance Dashboard',
 		description:
 			'Data visualization dashboard for financial analysts with real-time updates and interactive charts.',
-		imageUrl: '/project2.jpg',
+		imageUrl: '/projects/project2.png',
 		tags: ['TypeScript', 'D3.js', 'Express', 'PostgreSQL', 'WebSockets'],
 	},
 	{
@@ -27,7 +27,7 @@ const projects = [
 		title: 'Social Media App',
 		description:
 			'Mobile-first social platform with user-generated content and a powerful recommendation engine.',
-		imageUrl: '/project3.jpg',
+		imageUrl: '/projects/project3.png',
 		tags: ['React Native', 'GraphQL', 'Node.js', 'AWS', 'Firebase'],
 	},
 	{
@@ -35,7 +35,7 @@ const projects = [
 		title: 'Health Tracker',
 		description:
 			'Wellness application that helps users track fitness goals, nutrition, and sleep patterns with actionable insights.',
-		imageUrl: '/project4.jpg',
+		imageUrl: '/projects/project4.png',
 		tags: ['Vue.js', 'Tailwind CSS', 'Express', 'MongoDB', 'Docker'],
 	},
 	{
@@ -43,7 +43,7 @@ const projects = [
 		title: 'AI Content Generator',
 		description:
 			'Creative assistant platform that helps content creators generate and refine ideas using machine learning.',
-		imageUrl: '/project5.jpg',
+		imageUrl: '/projects/project5.png',
 		tags: ['React', 'Python', 'TensorFlow', 'FastAPI', 'PostgreSQL'],
 	},
 ];
@@ -52,14 +52,8 @@ export const Projects = () => {
 	const [activeProject, setActiveProject] = useState(projects[0].id);
 
 	const handleProjectClick = (id: string) => {
-		console.log('Project clicked:', id);
 		setActiveProject(id);
 	};
-
-	// Add logging to verify state changes
-	useEffect(() => {
-		console.log('Active project changed to:', activeProject);
-	}, [activeProject]);
 
 	const activeProjectData = projects.find(
 		(project) => project.id === activeProject
@@ -87,12 +81,10 @@ export const Projects = () => {
 			<div className="hidden md:block">
 				{activeProjectData && (
 					<div className="sticky top-24">
-						<div className="relative w-full aspect-video bg-gray-200 mb-6">
-							<Image
+						<div className="w-full aspect-video bg-muted mb-6 overflow-hidden">
+							<ProjectImage
 								src={activeProjectData.imageUrl}
 								alt={activeProjectData.title}
-								fill
-								className="object-cover"
 							/>
 						</div>
 						<p className="text-lg mb-4">{activeProjectData.description}</p>

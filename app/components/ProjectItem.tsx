@@ -29,7 +29,7 @@ export const ProjectItem: React.FC<ProjectItemProps> = ({
         className={`text-left transition-all duration-300 px-2 py-4 border-t border-border text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight w-full cursor-pointer ${
           isActive
             ? 'text-foreground'
-            : 'text-foreground/40 hover:text-foreground/60'
+            : 'text-foreground/75 hover:text-foreground/90'
         }`}
         aria-pressed={isActive}
         type="button"

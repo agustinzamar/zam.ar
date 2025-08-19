@@ -15,7 +15,7 @@ export default function Home() {
     if (!headingRef.current) return;
 
     // Get the original text
-    const element = headingRef.current;
+    const element = headingRef.current as HTMLHeadingElement;
     const originalText = element.textContent;
 
     // Create a wrapper div to hold the split text
@@ -26,7 +26,7 @@ export default function Home() {
     // Split text by words and add to wrapper with proper spacing
     const words = originalText.trim().split(/\s+/);
 
-    words.forEach((word, index) => {
+    words.forEach((word: string, index: number) => {
       // Create word span
       const wordSpan = document.createElement("span");
       wordSpan.textContent = word;

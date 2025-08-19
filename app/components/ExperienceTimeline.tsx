@@ -1,6 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 interface JobExperience {
   id: string;
@@ -55,11 +57,77 @@ const experiences: JobExperience[] = [
 ];
 
 export const ExperienceTimeline: React.FC = () => {
+  const timelineRef = useRef<HTMLDivElement>(null);
+  const jobRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    // Need to register ScrollTrigger with GSAP
+    if (typeof window !== 'undefined') {
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Wait for the next frame to ensure DOM is ready
+      requestAnimationFrame(() => {
+        // Clear any existing ScrollTriggers to prevent duplicates
+        ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+
+        // Set initial state for job elements - off screen to the left and transparent
+        if (jobRefs.current.length > 0) {
+          gsap.set(jobRefs.current, {
+            x: -50,
+            opacity: 0,
+            immediateRender: true
+          });
+
+          // Create individual animations for each job element
+          jobRefs.current.forEach((job, index) => {
+            if (job) {
+              gsap.to(job, {
+                x: 0,
+                opacity: 1,
+                duration: 1,
+                ease: "power2.out",
+                delay: index * 0.2,
+                scrollTrigger: {
+                  trigger: job,
+                  start: "top 85%", // Trigger when the top of the element reaches 85% down the viewport
+                  end: "top 60%",
+                  toggleActions: "restart none none reset", // Change to restart on enter and reset on leave
+                  id: `job-${index}`,
+                }
+              });
+            }
+          });
+        } else {
+          console.warn('No job elements found to animate');
+        }
+      });
+    }
+
+    // Cleanup function
+    return () => {
+      if (typeof window !== 'undefined') {
+        ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      }
+    };
+  }, []); // Empty dependency array means this runs once on mount
+
+  // Reset the refs array before populating it
+  const setRefs = (el: HTMLDivElement | null, index: number) => {
+    if (el && jobRefs.current.length <= experiences.length) {
+      jobRefs.current[index] = el;
+    }
+  };
+
   return (
-    <div className="px-8">
+    <div className="px-8" ref={timelineRef}>
       <div className="grid grid-cols-1 gap-0">
-        {experiences.map((job) => (
-          <div key={job.id} className="border-t border-border py-12">
+        {experiences.map((job, index) => (
+          <div
+            key={job.id}
+            className="border-t border-border py-12"
+            ref={(el) => setRefs(el, index)}
+            style={{ opacity: 0 }} // Set initial opacity to ensure elements start invisible
+          >
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
               {/* Left column - period */}
               <div className="md:col-span-2">

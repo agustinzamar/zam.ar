@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Github, Linkedin, Moon, Sun, Globe } from "lucide-react";
+import { Github, Linkedin, Moon, Sun, Globe, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useTheme } from "../providers/theme-provider";
 
@@ -21,11 +21,16 @@ const sections: Section[] = [
 export function Nav() {
   const [activeSection, setActiveSection] = useState("hero");
   const { theme, toggleTheme } = useTheme();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   // Handle scroll and update active section
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
+
+      // Update header background opacity based on scroll position
+      setIsScrolled(scrollPosition > 10);
 
       // Find which section is currently in view
       const currentSection = sections.find((section) => {
@@ -45,9 +50,34 @@ export function Nav() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const handleMobileNavClick = (sectionId: string) => {
+    document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
+    setIsMobileMenuOpen(false);
+  };
+
   return (
     <>
-      {/* Top right utility controls */}
+      {/* Header with semi-transparent background - added pointer-events-none to fix background issues */}
+      <header className={`fixed bg-background top-0 left-0 right-0 w-full h-20 z-40 pointer-events-none transition-all duration-300`}></header>
+
+      {/* Mobile hamburger menu button */}
+      <div className="fixed top-0 left-0 p-6 z-50 md:hidden">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleMobileMenu}
+          aria-label="Toggle menu"
+          className="w-10 h-10"
+        >
+          {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </Button>
+      </div>
+
+      {/* Top right utility controls - visible on all screen sizes */}
       <div className="fixed top-0 right-0 p-6 flex items-center gap-4 z-50">
         <Button
           variant="ghost"
@@ -91,9 +121,29 @@ export function Nav() {
         </Link>
       </div>
 
-      {/* Right side vertical navigation */}
-      <div className="fixed right-6 top-1/2 transform -translate-y-1/2 z-50">
-        <nav className="flex flex-col items-end gap-8">
+      {/* Mobile navigation drawer */}
+      <div className={`fixed inset-0 bg-background/60 backdrop-blur-sm z-40 transform transition-transform duration-300 ease-in-out ${
+        isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+      } md:hidden pt-20`}>
+        <div className="flex flex-col h-full px-6">
+          <nav className="flex flex-col gap-8">
+            {sections.map((section) => (
+              <button
+                key={section.id}
+                onClick={() => handleMobileNavClick(section.id)}
+                className={`text-left text-lg font-medium py-2 border-l-2 pl-4 transition-colors ${
+                  activeSection === section.id ? "border-primary text-primary" : "border-transparent hover:text-primary/80 hover:border-primary/50"
+                }`}
+              >
+                {section.label}
+              </button>
+            ))}
+          </nav>
+        </div>
+      </div>
+
+      <div className="fixed right-6 top-1/2 transform -translate-y-1/2 z-50 hidden md:block">
+        <nav className="flex flex-col items-end gap-8 p-4 rounded-l-xl bg-background/40 backdrop-blur-[2px] shadow-sm transition-all duration-300">
           {sections.map((section) => (
             <Link
               key={section.id}

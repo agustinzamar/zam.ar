@@ -22,16 +22,10 @@ export function Nav() {
   const [activeSection, setActiveSection] = useState("hero");
   const { theme, toggleTheme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
 
   // Handle scroll and update active section
   useEffect(() => {
     const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-
-      // Update header background opacity based on scroll position
-      setIsScrolled(scrollPosition > 10);
-
       // Find which section is currently in view
       const currentSection = sections.find((section) => {
         const element = document.getElementById(section.id);

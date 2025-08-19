@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import Image from 'next/image';
 import { gsap } from 'gsap';
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
@@ -133,7 +132,7 @@ export function TestimonialMarquee() {
                   <p className="text-sm text-gray-600">{testimonial.role}</p>
                 </div>
               </div>
-              <blockquote className="text-gray-700 italic">"{testimonial.quote}"</blockquote>
+              <blockquote className="text-gray-700 italic">&ldquo;{testimonial.quote}&rdquo;</blockquote>
             </div>
           ))}
         </div>

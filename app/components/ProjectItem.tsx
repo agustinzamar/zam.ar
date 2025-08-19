@@ -25,6 +25,7 @@ export const ProjectItem: React.FC<ProjectItemProps> = ({
 }) => {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
+  const mobileDetailsRef = useRef<HTMLDivElement>(null);
   const isInitialMount = useRef(true);
 
   // Animation when active state changes
@@ -84,6 +85,39 @@ export const ProjectItem: React.FC<ProjectItemProps> = ({
     }
   }, [isActive]);
 
+  // Mobile details animation
+  useEffect(() => {
+    if (!mobileDetailsRef.current) return;
+
+    if (isActive) {
+      // Reset initial state for animation
+      gsap.set(mobileDetailsRef.current, {
+        opacity: 0,
+        y: 10,
+        display: 'block',
+      });
+
+      // Simple fade-in and slide-up animation
+      gsap.to(mobileDetailsRef.current, {
+        opacity: 1,
+        y: 0,
+        duration: 0.3,
+        ease: 'power1.out',
+      });
+    } else if (!isInitialMount.current) {
+      // Simple fade-out animation
+      gsap.to(mobileDetailsRef.current, {
+        opacity: 0,
+        duration: 0.2,
+        onComplete: () => {
+          if (mobileDetailsRef.current) {
+            gsap.set(mobileDetailsRef.current, { display: 'none' });
+          }
+        },
+      });
+    }
+  }, [isActive]);
+
   return (
     <div className="flex flex-col relative">
       <button
@@ -106,7 +140,11 @@ export const ProjectItem: React.FC<ProjectItemProps> = ({
       </button>
 
       {isActive && (
-        <div className="md:hidden mt-4 mb-8 px-2">
+        <div
+          ref={mobileDetailsRef}
+          className="md:hidden mt-4 mb-8 px-2 overflow-hidden"
+          style={{ opacity: 0 }}
+        >
           <div className="w-full aspect-video bg-background mb-4 overflow-hidden">
             <ProjectImage src={imageUrl} alt={title} />
           </div>

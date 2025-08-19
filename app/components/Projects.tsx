@@ -68,15 +68,20 @@ export const Projects = () => {
 			setTimeout(() => {
 				// Only animate if ScrollTrigger is available and elements exist
 				if (ScrollTrigger && projectsRef.current) {
-					// Clear any existing ScrollTriggers to prevent duplicates
-					ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+					// Clear only project-specific ScrollTriggers to prevent conflicts with other components
+					ScrollTrigger.getAll().forEach((trigger) => {
+						if (trigger.vars && trigger.vars.id && trigger.vars.id.toString().startsWith('project-')) {
+							trigger.kill();
+						}
+					});
 
-					// Create a timeline for the animations
+					// Create a timeline for the animations with unique ID
 					const tl = gsap.timeline({
 						scrollTrigger: {
 							trigger: projectsRef.current,
 							start: 'top 80%',
 							toggleActions: 'play none none none',
+							id: 'project-main' // Unique ID for this trigger
 						}
 					});
 
@@ -96,15 +101,15 @@ export const Projects = () => {
 					if (projectItemsRef.current.length > 0) {
 						tl.fromTo(
 							projectItemsRef.current,
-							{ x: -30, opacity: 0 },
+							{ x: -80, opacity: 0 },
 							{
 								x: 0,
 								opacity: 1,
-								stagger: 0.1,
+								stagger: 0.25, // Increased stagger time for more pronounced ladder effect
 								duration: 0.6,
 								ease: 'power2.out',
 							},
-							"-=0.4" // Start slightly before the previous animation finishes
+							"-=0.9" // Start slightly before the previous animation finishes
 						);
 					}
 				}
@@ -113,41 +118,21 @@ export const Projects = () => {
 
 		return () => {
 			if (typeof window !== 'undefined' && ScrollTrigger) {
-				ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+				// Only clear project-specific ScrollTriggers on unmount
+				ScrollTrigger.getAll().forEach((trigger) => {
+					if (trigger.vars && trigger.vars.id && trigger.vars.id.toString().startsWith('project-')) {
+						trigger.kill();
+					}
+				});
 			}
 		};
 	}, []);
 
-	// Add animation when switching between projects
+	// Animation when switching between projects has been removed to make content immediately visible
 	useEffect(() => {
 		if (detailsRef.current) {
-			// Create a timeline for smooth transition
-			const tl = gsap.timeline();
-
-			// Fade out and slide right
-			tl.to(detailsRef.current, {
-				opacity: 0,
-				x: 20,
-				duration: 0.3,
-				ease: 'power2.in',
-			});
-
-			// Reset position and fade in with a slight delay
-			tl.to(detailsRef.current, {
-				x: -20,
-				duration: 0,
-				onComplete: () => {
-					// This ensures the content has updated before animating back in
-					setTimeout(() => {
-						gsap.to(detailsRef.current, {
-							opacity: 1,
-							x: 0,
-							duration: 0.5,
-							ease: 'power2.out',
-						});
-					}, 50);
-				}
-			}, '>0.1');
+			// Set opacity to 1 to ensure content is always visible
+			gsap.set(detailsRef.current, { opacity: 1, x: 0 });
 		}
 	}, [activeProject]);
 
